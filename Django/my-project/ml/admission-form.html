@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Admission Prediction</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="pt-2 col-6 offset-3"> Admission Predict </h2>
+    <h2 class="pt-2 col-6 offset-3" id="prediction"></h2>
+    <form id="admission" class="pt-2 col-6 offset-3">
+        <fieldset class="form-group">
+            <label>GRE Score</label>
+            <input type="text" name="gre" class="form-control"> 
+        </fieldset>
+        <fieldset class="form-group">
+            <label>TOEFL Score</label>
+            <input type="text" name="toefl" class="form-control"> 
+        </fieldset>
+        <fieldset class="form-group">
+            <label>University Rating</label>
+            <input type="text" name="rating" class="form-control"> 
+        </fieldset>
+        <fieldset class="form-group">
+            <label>SOP</label>
+            <input type="text" name="sop" class="form-control"> 
+        </fieldset>
+        <fieldset class="form-group">
+            <label>LOR</label>
+            <input type="text" name="lor" class="form-control"> 
+        </fieldset>
+        <fieldset class="form-group">
+            <label>CGPA</label>
+            <input type="text" name="cgpa" class="form-control"> 
+        </fieldset>
+        <fieldset class="form-group">
+            <label>Research</label>
+            <input type="text" name="research" class="form-control"> 
+        </fieldset>
+
+        <div class="pt-2 row">
+            <button class="ml-auto btn btn-primary" type="submit">Predict Chance of Admission</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            o[this.name] = this.value || 0;
+        });
+        return o;
+    };
+
+    $("#prediction").hide();
+
+    $("#admission").on("submit", function(e){
+        var data = $("#admission").serializeObject();
+
+        e.preventDefault();
+
+        $.ajax({
+            url: "http://localhost:8000/ml/admission/",
+            type: "POST",
+            dataType: "json",
+            data: data,
+            success: function(res){
+                $("#prediction").show()
+                $("#prediction").html(`Chances: ${res["chance"]}`)
+            },
+            error: function(err){
+                alert("error")
+            }
+        });
+    })
+
+
+</script>
+
+</body>
+</html> 
